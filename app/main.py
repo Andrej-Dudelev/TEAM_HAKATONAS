@@ -9,7 +9,7 @@ from app.api.pages import router as pages_router
 from app.db import init_db, SessionLocal, QAPair
 from app.services.semantic_search import SemanticSearchService, search_service as global_search_service
 from app.api.chat_routes import router as chat_router
-
+from app.api.qa_doc_routes import router as qa_doc_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("--- Application Startup ---")
@@ -66,7 +66,7 @@ app.add_middleware(
 app.include_router(pages_router)
 app.include_router(api_router, prefix="/api")
 app.include_router(chat_router, prefix="/api/chat")
-
+app.include_router(qa_doc_router, prefix="/api/admin")
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)

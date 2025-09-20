@@ -103,8 +103,8 @@ class VariationIn(BaseModel):
 
 class QAPairIn(BaseModel):
     qa_id: constr(strip_whitespace=True, min_length=1)
-    question_en: Optional[constr(strip_whitespace=True, min_length=1)] = None
-    question_ka: Optional[constr(strip_whitespace=True, min_length=1)] = None
+    question_lt: Optional[constr(strip_whitespace=True, min_length=1)] = None
+
     variations: List[VariationIn] = Field(default_factory=list)
 
 class VariationCreate(BaseModel):
@@ -164,7 +164,7 @@ def add_qa(qa: QAPairIn):
     qa_ns = SimpleNamespace(
         qa_id=qa.qa_id,
         question_en=qa.question_en,
-        question_ka=qa.question_ka,
+  
         variations=vars_ns
     )
     svc.add_qa_pair(qa_ns)
@@ -180,7 +180,7 @@ def update_qa(qa_id: str, qa: QAPairIn):
     qa_ns = SimpleNamespace(
         qa_id=qa.qa_id,
         question_en=qa.question_en,
-        question_ka=qa.question_ka,
+
         variations=vars_ns
     )
     svc.update_qa_pair(qa_ns)

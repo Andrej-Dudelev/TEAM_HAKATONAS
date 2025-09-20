@@ -5,6 +5,8 @@ from app.db.models import QAPair, QuestionVariation
 import re
 import torch
 import uuid
+# Global variable to store the service instance
+
 
 class SemanticSearchService:
     def __init__(self):
@@ -43,19 +45,14 @@ class SemanticSearchService:
     def add_qa_pair(self, qa_pair: QAPair):
         questions_to_index = []
 
-        if qa_pair.question_en:
+        if qa_pair.question_lt:
             questions_to_index.append({
                 "id": f"{qa_pair.qa_id}_en_main",
-                "text": qa_pair.question_en,
-                "meta": {"qa_id": qa_pair.qa_id, "language": "en", "original_question": qa_pair.question_en}
+                "text": qa_pair.question_lt,
+                "meta": {"qa_id": qa_pair.qa_id, "language": "lt", "original_question": qa_pair.question_lt}
             })
 
-        if qa_pair.question_ka:
-            questions_to_index.append({
-                "id": f"{qa_pair.qa_id}_ka_main",
-                "text": qa_pair.question_ka,
-                "meta": {"qa_id": qa_pair.qa_id, "language": "ka", "original_question": qa_pair.question_ka}
-            })
+        
 
         if hasattr(qa_pair, 'variations') and qa_pair.variations:
             for variation in qa_pair.variations:
