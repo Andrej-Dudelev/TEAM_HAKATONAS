@@ -11,8 +11,8 @@ class QuestionVariation(BaseModel):
 class QAPair(BaseModel):
     """Pagrindinis Q&A įrašas su pradiniu klausimu (-ais) ir variacijomis."""
     qa_id: str
-    question_en: Optional[str] = None
-    question_ka: Optional[str] = None
+    question_lt: Optional[str] = None
+
     variations: List[QuestionVariation] = Field(default_factory=list)
 
 __all__ = ["QAPair", "QuestionVariation"]
