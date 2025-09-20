@@ -8,7 +8,15 @@ engine = create_engine(
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+def get_db():
+    """FastAPI dependency: grąžina DB sesiją ir ją uždaro po užklausos."""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
+        
 def init_db():
     from app.db.base import Base
     from app.db import models
