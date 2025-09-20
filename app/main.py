@@ -8,6 +8,7 @@ from app.api.routes import router as api_router
 from app.api.pages import router as pages_router
 from app.db import init_db, SessionLocal, QAPair
 from app.services.semantic_search import SemanticSearchService, search_service as global_search_service
+from app.api.chat_routes import router as chat_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -61,8 +62,10 @@ app.add_middleware(
     allow_methods=["*"], allow_headers=["*"],
 )
 
+
 app.include_router(pages_router)
 app.include_router(api_router, prefix="/api")
+app.include_router(chat_router, prefix="/api/chat")
 
 if __name__ == "__main__":
     import uvicorn
