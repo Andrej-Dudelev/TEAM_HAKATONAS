@@ -2,26 +2,21 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from sqlalchemy.orm import Session
+from fastapi.staticfiles import StaticFiles
 
 from app.api.routes import router as api_router
+from app.api.pages import router as pages_router
 from app.db import init_db, SessionLocal, QAPair
 from app.services.semantic_search import SemanticSearchService, search_service as global_search_service
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Manages application startup and shutdown events. This is where
-    database and other services are initialized.
-    """
     print("--- Application Startup ---")
-    
     init_db()
-    
     global global_search_service
     if global_search_service is None:
         print("Instantiating and syncing SemanticSearchService...")
         global_search_service = SemanticSearchService()
-
         db: Session = SessionLocal()
         try:
             all_qa_pairs = db.query(QAPair).all()
@@ -31,17 +26,14 @@ async def lifespan(app: FastAPI):
                 print("No Q&A pairs in DB to sync with ChromaDB.")
         finally:
             db.close()
-    
     print("--- Startup Complete ---")
     yield
     print("--- Application Shutdown ---")
-
 
 app = FastAPI(
     title="Simple LLM API",
     description="""
 API atsakyti į klausimus naudojant OpenAI modelius.
-
 **Endpoint'ai:**
 - `POST /api/ask` – grąžina LLM atsakymą (general arba RAG režimas).
 - `GET /api/ask-stream` – SSE srautas (atsakymas dalimis).
@@ -69,7 +61,8 @@ app.add_middleware(
     allow_methods=["*"], allow_headers=["*"],
 )
 
-app.include_router(api_router)
+app.include_router(pages_router)
+app.include_router(api_router, prefix="/api")
 
 if __name__ == "__main__":
     import uvicorn
