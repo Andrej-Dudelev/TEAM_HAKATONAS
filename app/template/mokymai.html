@@ -1,0 +1,25 @@
+
+{% extends "base.html" %}
+
+{% block title %}Mokymai{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4 text-gray-800">Mokymai</h1>
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Įkelkite PDF failą</h6>
+  </div>
+  <div class="card-body">
+    <form method="post" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="pdfUpload">Pasirinkite PDF:</label>
+        <input type="file" class="form-control-file" id="pdfUpload" name="pdf_file" accept="application/pdf">
+      </div>
+      <button type="submit" class="btn btn-success">
+        <i class="fas fa-upload"></i> Įkelti
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>{% block title %}SB Admin 2{% endblock %}</title>
+
+  <!-- Bootstrap 4 + FontAwesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css" rel="stylesheet">
+
+  <style>
+    .chat-box {
+      height: 400px;
+      overflow-y: auto;
+      padding: 10px;
+      border: 1px solid #e3e6f0;
+      border-radius: .35rem;
+      background-color: #f8f9fc;
+    }
+    .chat-message {
+      padding: 10px 15px;
+      border-radius: 20px;
+      margin: 5px 0;
+      max-width: 75%;
+      word-wrap: break-word;
+      display: inline-block;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .user-message {
+      background-color: #4e73df;
+      color: white;
+      float: right;
+      clear: both;
+      border-bottom-right-radius: 5px;
+    }
+    .llm-message {
+      background-color: #e4e6eb;
+      color: #050505;
+      float: left;
+      clear: both;
+      border-bottom-left-radius: 5px;
+    }
+    .message-container {
+      overflow: hidden;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body id="page-top">
+  <div id="wrapper">
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+        <div class="sidebar-brand-icon rotate-n-15">
+          <i class="fas fa-laugh-wink"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+      </a>
+
+      <hr class="sidebar-divider my-0">
+
+      <li class="nav-item {% if page == 'chat' %}active{% endif %}">
+        <a class="nav-link" href="/chat">
+          <i class="fas fa-fw fa-comments"></i>
+          <span>Chat</span></a>
+      </li>
+
+      <li class="nav-item {% if page == 'mokymai' %}active{% endif %}">
+        <a class="nav-link" href="/mokymai">
+          <i class="fas fa-fw fa-book"></i>
+          <span>Mokymai</span></a>
+      </li>
+    </ul>
+    <!-- End Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                <img class="img-profile rounded-circle" src="https://via.placeholder.com/40">
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Content Section -->
+        <div class="container-fluid">
+          {% block content %}{% endblock %}
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Your Website 2024</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js"></script>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>
