@@ -208,3 +208,5 @@ __marimo__/
 .env
 education_db.db
 chroma_db/
+chroma/
+

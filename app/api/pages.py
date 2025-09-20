@@ -12,6 +12,12 @@ async def get_chat_page(request: Request):
         name="tikras_chatas.html",
         context={"request": request}
     )
+@router.get("/mokymai", response_class=HTMLResponse)
+async def get_chat_page(request: Request):
+    return templates.TemplateResponse(
+        name="mokymai.html",
+        context={"request": request}
+    )
 
 @router.get("/", response_class=RedirectResponse)
 async def root():

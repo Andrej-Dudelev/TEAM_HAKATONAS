@@ -1,190 +1,77 @@
 
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+{% block title %}LLM Chat{% endblock %}
 
-  <title>SB Admin 2 - Chat</title>
-
-  <!-- Bootstrap 4 + FontAwesome (CDN) -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-
-  <!-- SB Admin 2 CSS (CDN versija) -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css" rel="stylesheet">
-
-  <style>
-    .chat-box {
-      height: 400px;
-      overflow-y: auto;
-      padding: 10px;
-      border: 1px solid #760101;
-      border-radius: .35rem;
-      background-color: #f8f9fc;
-    }
-    .chat-message {
-      padding: 10px 15px;
-      border-radius: 20px;
-      margin: 5px 0;
-      max-width: 75%;
-      word-wrap: break-word;
-      display: inline-block;
-      font-size: 14px;
-      line-height: 1.4;
-    }
-    .user-message {
-      background-color: #4e73df;
-      color: white;
-      float: right;
-      clear: both;
-      border-bottom-right-radius: 5px;
-    }
-    .llm-message {
-      background-color: #e4e6eb;
-      color: #050505;
-      float: left;
-      clear: both;
-      border-bottom-left-radius: 5px;
-    }
-    .message-container {
-      overflow: hidden;
-      width: 100%;
-    }
-  </style>
-</head>
-
-<body id="page-top">
-
-  <!-- Page Wrapper -->
-  <div id="wrapper">
-
-    <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-        <div class="sidebar-brand-icon rotate-n-15">
-          <i class="fas fa-laugh-wink"></i>
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">LLM Chat</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Conversation</h6>
         </div>
-        <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
-      </a>
-      <hr class="sidebar-divider my-0">
-      <li class="nav-item active">
-        <a class="nav-link" href="index.html">
-          <i class="fas fa-fw fa-comments"></i>
-          <span>Chat</span></a>
-      </li>
-      <hr class="sidebar-divider">
-    </ul>
-    <!-- End of Sidebar -->
-
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
-
-      <!-- Main Content -->
-      <div id="content">
-        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item dropdown no-arrow">
-              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                <img class="img-profile rounded-circle" src="https://via.placeholder.com/40">
-              </a>
-            </li>
-          </ul>
-        </nav>
-
-        <!-- Page Content -->
-        <div class="container-fluid">
-          <h1 class="h3 mb-4 text-gray-800">LLM Chat</h1>
-
-          <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Conversation</h6>
-            </div>
-            <div class="card-body">
-              <div class="chat-box" id="chatBox">
+        <div class="card-body">
+            <div class="chat-box" id="chatBox">
                 <div class="message-container">
-                  <div class="chat-message llm-message">
-                    Hello! How can I help you today?
-                  </div>
+                    <div class="chat-message llm-message">
+                        Hello! How can I help you today?
+                    </div>
                 </div>
-              </div>
-              <div class="mt-3">
-                <div class="input-group">
-                  <textarea id="userInput" class="form-control" placeholder="Type your message..." rows="2"></textarea>
-                  <div class="input-group-append">
-                    <button class="btn btn-primary" type="button" id="sendMessageBtn">
-                      <i class="fas fa-paper-plane"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
             </div>
-          </div>
-
+            <div class="mt-3">
+                <div class="input-group">
+                    <textarea id="userInput" class="form-control" placeholder="Type your message..." rows="2"></textarea>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" id="sendMessageBtn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-
-      <!-- Footer -->
-      <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2024</span>
-          </div>
-        </div>
-      </footer>
     </div>
-  </div>
+</div>
+{% endblock %}
 
-  <!-- Bootstrap core JavaScript-->
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js"></script>
-
-  <script>
+{% block scripts %}
+<script>
     const chatBox = document.getElementById('chatBox');
     const userInput = document.getElementById('userInput');
     const sendMessageBtn = document.getElementById('sendMessageBtn');
 
     function addMessage(message, sender) {
-      const messageContainer = document.createElement('div');
-      messageContainer.classList.add('message-container');
+        const messageContainer = document.createElement('div');
+        messageContainer.classList.add('message-container');
 
-      const messageElement = document.createElement('div');
-      messageElement.classList.add('chat-message', sender === 'user' ? 'user-message' : 'llm-message');
-      messageElement.innerText = message;
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('chat-message', sender === 'user' ? 'user-message' : 'llm-message');
+        messageElement.innerText = message;
 
-      messageContainer.appendChild(messageElement);
-      chatBox.appendChild(messageContainer);
-      chatBox.scrollTop = chatBox.scrollHeight;
+        messageContainer.appendChild(messageElement);
+        chatBox.appendChild(messageContainer);
+        chatBox.scrollTop = chatBox.scrollHeight;
     }
 
     async function handleSendMessage() {
-      const message = userInput.value.trim();
-      if (message === '') return;
+        const message = userInput.value.trim();
+        if (message === '') return;
 
-      addMessage(message, 'user');
-      userInput.value = '';
+        addMessage(message, 'user');
+        userInput.value = '';
 
-      // Simulated bot response
-      setTimeout(() => {
-        const llmResponse = "This is a simulated response from the LLM.";
-        addMessage(llmResponse, 'llm');
-      }, 800);
+        // Simulated bot response
+        setTimeout(() => {
+            const llmResponse = "This is a simulated response from the LLM.";
+            addMessage(llmResponse, 'llm');
+        }, 800);
     }
 
     sendMessageBtn.addEventListener('click', handleSendMessage);
     userInput.addEventListener('keypress', function (e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        handleSendMessage();
-      }
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSendMessage();
+        }
     });
-  </script>
-</body>
-</html>
+</script>
+{% endblock %}
