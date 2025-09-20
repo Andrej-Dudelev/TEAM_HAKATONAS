@@ -1,2 +1,3 @@
 # TEAM_HAKATONAS1
-1233
+Requirement install:
+pip install -r requirements.txt

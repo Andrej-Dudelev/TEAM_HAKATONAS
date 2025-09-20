@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.api.routes import router as api_router
 from app.db import init_db, SessionLocal, QAPair
-from chromadb import SemanticSearchService, search_service as global_search_service
+from app.services.semantic_search import SemanticSearchService, search_service as global_search_service
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
