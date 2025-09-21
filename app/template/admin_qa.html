@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% block title %}Manage Q&A{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <h1 class="text-3xl font-bold text-white mb-6">Manage Q&A Pairs</h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Column: Add/Upload -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Manual Add Form -->
+            <div class="bg-gray-800/50 rounded-xl p-6">
+                <h2 class="text-xl font-bold text-white mb-4">Add New Q&A Pair</h2>
+                <form id="createQaForm" class="space-y-4">
+                    <div>
+                        <label for="qaQuestion" class="block text-sm font-medium text-gray-300 mb-1">Question</label>
+                        <textarea id="qaQuestion" rows="3" required placeholder="e.g., How to declare a variable in Python?" class="appearance-none w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg shadow-sm text-gray-200 placeholder-gray-500 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"></textarea>
+                    </div>
+                    <div>
+                        <label for="qaAnswer" class="block text-sm font-medium text-gray-300 mb-1">Answer</label>
+                        <textarea id="qaAnswer" rows="5" required placeholder="Provide a clear and concise answer..." class="appearance-none w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg shadow-sm text-gray-200 placeholder-gray-500 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"></textarea>
+                    </div>
+                    <div class="pt-2 flex justify-end">
+                         <button type="submit" class="inline-flex items-center justify-center px-4 py-2 font-semibold rounded-md shadow-sm transition-transform transform hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 bg-primary-600 text-white hover:bg-primary-500 focus:ring-primary-500">
+                             <i class="fas fa-plus mr-2"></i>Add Q&A Pair
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- File Upload Form -->
+            <div class="bg-gray-800/50 rounded-xl p-6">
+                <h2 class="text-xl font-bold text-white mb-4">Bulk Upload</h2>
+                 <form id="uploadQaForm" class="space-y-4">
+                    <div>
+                        <label for="qaFile" class="block text-sm font-medium text-gray-300 mb-1">Upload .xlsx or .csv</label>
+                        <input type="file" id="qaFile" name="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-600 file:text-white hover:file:bg-primary-500 cursor-pointer"/>
+                        <p class="text-xs text-gray-500 mt-1">File must have 'question' and 'answer' columns.</p>
+                    </div>
+                    <div class="pt-2 flex justify-end">
+                         <button type="submit" class="inline-flex items-center justify-center px-4 py-2 font-semibold rounded-md shadow-sm transition-transform transform hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 bg-primary-600 text-white hover:bg-primary-500 focus:ring-primary-500">
+                            <i class="fas fa-upload mr-2"></i>Upload File
+                        </button>
+                    </div>
+                </form>
+                <div id="uploadStatus" class="mt-3"></div>
+            </div>
+        </div>
+
+        <!-- Right Column: Existing Q&A -->
+        <div class="lg:col-span-2 bg-gray-800/50 rounded-xl p-6 flex flex-col">
+            <h2 class="text-xl font-bold text-white mb-4 flex-shrink-0">Existing Q&A Pairs</h2>
+            <div id="qaList" class="space-y-3 flex-grow overflow-y-auto">
+                <!-- Q&A items will be loaded here -->
+            </div>
+            <div id="paginationControls" class="mt-4 flex justify-between items-center flex-shrink-0">
+                <!-- Pagination will be rendered here -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const qaList = document.getElementById('qaList');
+    const paginationControls = document.getElementById('paginationControls');
+    const createQaForm = document.getElementById('createQaForm');
+    const uploadQaForm = document.getElementById('uploadQaForm');
+    const uploadStatus = document.getElementById('uploadStatus');
+
+    let currentPage = 0;
+    const limit = 10;
+
+    async function fetchQAs(page = 0) {
+        try {
+            const response = await fetch(`/api/admin/qa?skip=${page * limit}&limit=${limit}`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const data = await response.json();
+            
+            qaList.innerHTML = '';
+            if (data.items.length === 0) {
+                qaList.innerHTML = `<p class="text-gray-500 text-center py-8">No Q&A pairs found.</p>`;
+            } else {
+                data.items.forEach(item => {
+                    const qaItem = document.createElement('div');
+                    qaItem.className = 'p-4 bg-gray-900/50 rounded-lg';
+                    qaItem.innerHTML = `
+                        <p class="font-semibold text-primary-400">${item.question || 'No question text'}</p>
+                        <p class="text-gray-300 mt-1 text-sm">${item.answer}</p>
+                        <p class="text-xs text-gray-500 mt-2">Added: ${new Date(item.created_at).toLocaleString()}</p>
+                    `;
+                    qaList.appendChild(qaItem);
+                });
+            }
+            renderPagination(data.total, page, limit);
+        } catch (error) {
+            qaList.innerHTML = `<p class="text-red-400">Error loading Q&A pairs.</p>`;
+            console.error('Error fetching Q&A:', error);
+        }
+    }
+
+    function renderPagination(total, page, limit) {
+        const totalPages = Math.ceil(total / limit);
+        paginationControls.innerHTML = '';
+
+        if (totalPages <= 1) return;
+
+        let paginationHtml = '<div class="flex items-center gap-2">';
+        
+        // Previous Button
+        paginationHtml += `
+            <button class="px-3 py-1 rounded-md text-sm ${page === 0 ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-gray-600 hover:bg-gray-500'}" 
+                    ${page === 0 ? 'disabled' : ''} onclick="changePage(${page - 1})">
+                Previous
+            </button>`;
+        
+        // Page Numbers
+        paginationHtml += `<span class="text-sm text-gray-400">Page ${page + 1} of ${totalPages}</span>`;
+
+        // Next Button
+        paginationHtml += `
+            <button class="px-3 py-1 rounded-md text-sm ${page + 1 >= totalPages ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-gray-600 hover:bg-gray-500'}"
+                    ${page + 1 >= totalPages ? 'disabled' : ''} onclick="changePage(${page + 1})">
+                Next
+            </button>`;
+
+        paginationHtml += '</div>';
+        paginationControls.innerHTML = paginationHtml;
+    }
+
+    window.changePage = (newPage) => {
+        currentPage = newPage;
+        fetchQAs(currentPage);
+    }
+    
+    // Handle manual form submission
+    createQaForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const question = document.getElementById('qaQuestion').value;
+        const answer = document.getElementById('qaAnswer').value;
+        const submitButton = createQaForm.querySelector('button[type="submit"]');
+
+        const payload = {
+            question: question,
+            answer: answer,
+            index: true
+        };
+        
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Adding...';
+
+        try {
+            const response = await fetch('/api/admin/qa', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                createQaForm.reset();
+                fetchQAs(currentPage); // Refresh list
+            } else {
+                const error = await response.json();
+                alert('Failed to create Q&A pair: ' + (error.detail || 'Unknown error'));
+            }
+        } catch (error) {
+            alert('An error occurred: ' + error.message);
+        } finally {
+            submitButton.disabled = false;
+            submitButton.innerHTML = '<i class="fas fa-plus mr-2"></i>Add Q&A Pair';
+        }
+    });
+
+    // Handle file upload form
+    uploadQaForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const fileInput = document.getElementById('qaFile');
+        if (fileInput.files.length === 0) {
+            uploadStatus.innerHTML = `<p class="text-yellow-400 text-sm">Please select a file to upload.</p>`;
+            return;
+        }
+        
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        
+        uploadStatus.innerHTML = `<p class="text-blue-400 text-sm">Uploading and processing...</p>`;
+        const submitButton = uploadQaForm.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Uploading...';
+
+        try {
+            const response = await fetch('/api/admin/qa/upload-file', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            if (response.ok) {
+                uploadStatus.innerHTML = `<p class="text-green-400 text-sm">${result.message}</p>`;
+                uploadQaForm.reset();
+                currentPage = 0; // Reset to first page
+                fetchQAs(0); 
+            } else {
+                uploadStatus.innerHTML = `<p class="text-red-400 text-sm">Error: ${result.detail || 'Upload failed'}</p>`;
+            }
+        } catch (error)
+        {
+            uploadStatus.innerHTML = `<p class="text-red-400 text-sm">An error occurred: ${error.message}</p>`;
+        } finally {
+             submitButton.disabled = false;
+             submitButton.innerHTML = '<i class="fas fa-upload mr-2"></i>Upload File';
+        }
+    });
+
+
+    // Initial load
+    fetchQAs(currentPage);
+});
+</script>
+{% endblock %}
+

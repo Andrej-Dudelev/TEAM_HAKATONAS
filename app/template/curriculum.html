@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Mokymai{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4 text-gray-800">Mokymai</h1>
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Įkelkite PDF failą</h6>
+  </div>
+  <div class="card-body">
+    <form action="/api/admin/docs/upload" method="post" enctype="multipart/form-data" id="uploadForm">
+      <div class="form-group">
+        <label for="pdfUpload">Pasirinkite PDF:</label>
+        <input type="file" class="form-control-file" id="pdfUpload" name="failas" accept="application/pdf" required>
+      </div>
+       <div class="form-group">
+        <label for="languageSelect">Dokumento kalba:</label>
+        <select class="form-control" id="languageSelect" name="kalba" required>
+          <option value="lt">Lietuvių (lt)</option>
+          <option value="en">Anglų (en)</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-success">
+        <i class="fas fa-upload"></i> Įkelti ir Indeksuoti
+      </button>
+    </form>
+    <div id="uploadStatus" class="mt-3"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    const statusDiv = document.getElementById('uploadStatus');
+    statusDiv.innerHTML = '<div class="alert alert-info">Uploading and processing...</div>';
+
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+        });
+        const result = await response.json();
+        if (response.ok) {
+            statusDiv.innerHTML = `<div class="alert alert-success">Success! Document '${result.failo_pavadinimas}' indexed with ID: ${result.id}.</div>`;
+            form.reset();
+        } else {
+            const errorDetail = result.detail || 'Unknown error occurred.';
+            statusDiv.innerHTML = `<div class="alert alert-danger">Error: ${errorDetail}</div>`;
+        }
+    } catch (error) {
+        statusDiv.innerHTML = `<div class="alert alert-danger">A network error occurred: ${error.message}</div>`;
+    }
+});
+</script>
+{% endblock %}

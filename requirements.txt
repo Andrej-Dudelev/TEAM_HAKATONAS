@@ -1,0 +1,13 @@
+fastapi==0.116.2
+openai==1.108.1
+pydantic==2.11.9
+pydantic_settings==2.10.1
+sentence_transformers==5.1.0
+SQLAlchemy==2.0.43
+torch==2.8.0
+uvicorn==0.36.0
+sqlalchemy
+numpy==1.26.4
+openai
+chromadb
+python-multipart
